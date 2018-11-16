@@ -1,6 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
-// var path = require('path');
+var path = require('path');
 // var cookieParser = require('cookie-parser');
 // var logger = require('morgan');
 const trackRoute = express.Router();
@@ -8,25 +8,25 @@ const multer = require('multer');
 const mongodb = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
-const bodyParser= require('body-parser')
+// const bodyParser= require('body-parser') // unable to handle multipart/form-data
+// const formidableMiddleware = require('express-formidable');
 /**
  * NodeJS Module dependencies.
  */
 const { Readable } = require('stream');
 
 var app = express();
-
-// view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
+// app.use(formidableMiddleware());
+//view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 // app.use(logger('dev'));
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}))
+
 
 app.use('/tracks', trackRoute);
 
@@ -35,14 +35,15 @@ app.use('/tracks', trackRoute);
  * Connect Mongo Driver to MongoDB.
  */
 let db;
-MongoClient.connect('mongodb://AgentFox:cuong2412@ds123500.mlab.com:23500/qcuong-test2',{ useNewUrlParser: true}, (err, database) => {
+MongoClient.connect('mongodb://AgentFox:cuong2412@ds123500.mlab.com:23500/qcuong-test2', (err, database) => {
   if (err) {
     console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
     process.exit(1);
   }
   console.log("connected db");
   
-  db = database;
+  db=database; // have to use mongodb@2.2.33 in order to pass database to multer
+  
 });
 
 /**
@@ -81,7 +82,7 @@ trackRoute.get('/:trackID', (req, res) => {
  */
 trackRoute.post('/', (req, res) => {
   
-  console.log(req.body);
+  
   
   const storage = multer.memoryStorage()
   const upload = multer({ storage: storage, limits: { fields: 1, fileSize: 6000000, files: 1, parts: 2 }});
@@ -92,6 +93,7 @@ trackRoute.post('/', (req, res) => {
     } else if(!req.body.name) {
       return res.status(400).json({ message: "No track name in request body" });
     }
+    console.log(req.body.name);
     
     let trackName = req.body.name;
     
