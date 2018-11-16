@@ -34,16 +34,16 @@ app.use('/tracks', trackRoute);
 /**
  * Connect Mongo Driver to MongoDB.
  */
-let db;
-MongoClient.connect('mongodb://AgentFox:cuong2412@ds123500.mlab.com:23500/qcuong-test2', (err, database) => {
+var db ;
+MongoClient.connect('mongodb://AgentFox:cuong2412@ds123500.mlab.com:23500/qcuong-test2',{ useNewUrlParser: true}, (err, database) => {
   if (err) {
     console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
     process.exit(1);
   }
   console.log("connected db");
   
-  db=database; // have to use mongodb@2.2.33 in order to pass database to multer
-  
+  db=database.db('qcuong-test2'); // have to use mongodb@2.2.33 in order to pass database to multer ( db=database )
+  // mongo3.1 need you to specify the database although it already declared in the url above
 });
 
 /**
