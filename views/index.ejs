@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>Video stream sample</title>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <video id="videoPlayer" controls preload="auto" autoplay>
+      <source src="http://localhost:3000/videos/5c08d95f6ca0ed1754d87f20" type="video/mp4">
+    </video>
+    <!-- <button id="toggleButton">Start/Stop</button> -->
+    
   </body>
 </html>
